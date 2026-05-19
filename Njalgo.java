@@ -6,7 +6,7 @@ private static int size = 5;
         //Initial labels
         String[] labels = {"A", "B", "C", "D", "E"};
         // Initialize the Q-matrix with the given values and assuming that A=0, B=1, C=2, D=3, E=4
-        int Qmatrix[][] = {
+        double Qmatrix[][] = {
             {0,10,12,8,7},
             {10,0,4,4,14},
             {12,4,0,6,16},
@@ -28,23 +28,24 @@ private static int size = 5;
         System.out.println();
 
         while (Qmatrix.length>2){
-            int sValue =0;
-            int minSValue = Integer.MAX_VALUE;
+            double sValue =0;
+            double minSValue = Double.MAX_VALUE;
             //these will be used to store the coordinates of the minimum S-value
-            int x=0,y=0,dxy=0;
-            int minRi=0,minRj=0;
+            int x=0,y=0;
+            double dxy=0;
+            double minRi=0,minRj=0;
 
 
             System.out.println("Matrix with S-values:");
             for (int i=0;i<Qmatrix.length;i++){
                 for (int j=0;j<Qmatrix[i].length;j++){
-                    int Ri=Rvalue(Qmatrix,i);
-                    int Rj=Rvalue(Qmatrix,j);
+                    double Ri=Rvalue(Qmatrix,i);
+                    double Rj=Rvalue(Qmatrix,j);
                     if(i==j){
                         sValue=0;
                     }
                     else{
-                    sValue = SvalueCal(Qmatrix[i][j],i,j,Ri,Rj,Qmatrix.length);
+                    sValue = SvalueCal(Qmatrix[i][j],Ri,Rj,Qmatrix.length);
                     }
                 
                     if (sValue < minSValue && i!=j){
@@ -74,7 +75,7 @@ private static int size = 5;
 
             
             //creating Newick labels
-            String newNodeLabel = "(" + labels[x] + ":" + Math.round(distanceX) + "," + labels[y] + ":" + Math.round(distanceY) + ")Node_" + nodeCounter++;
+            String newNodeLabel = "(" + labels[x] + ":" + distanceX + "," + labels[y] + ":" + distanceY + ")Node_" + nodeCounter++;
 
             //update the labels array
             labels = updateLabels(labels, x, y, newNodeLabel);
@@ -96,12 +97,13 @@ private static int size = 5;
 
         //final step to join the last two nodes
         double finalDist = Qmatrix[0][1];
-        String finalNewick = "(" + labels[0] + ":" + Math.round(finalDist) + "," + labels[1] + ")Root;";
+        String finalNewick = "(" + labels[0] + ":" + finalDist + "," + labels[1] + ")Root;";
         
         System.out.println("Final Newick String:");
         System.out.println(finalNewick);
 
         NewickTree tree = NewickTree.readNewickFormat(finalNewick);
+        System.out.println("\nTree Visualization:");
         tree.visualize();
     }
 //-------------------------------------------------------------------------------------------
@@ -110,8 +112,8 @@ private static int size = 5;
 
     //method to calculate the R values
     //-------------------------------------------------------------------------------------------
-    static int Rvalue(int Qmatrix[][],int j){
-        int sum = 0;
+    static double Rvalue(double Qmatrix[][],int j){
+        double sum = 0;
         for(int i=0;i<Qmatrix.length;i++){
             sum += Qmatrix[j][i];
         }
@@ -121,9 +123,9 @@ private static int size = 5;
     
     //method to calculate the S values
     //-------------------------------------------------------------------------------------------
-    static int SvalueCal(int d,int i,int j,int Ri,int Rj, int n){
+    static double SvalueCal(double d,double Ri,double Rj, int n){
         // int n=size;
-        int sValue = (n/2)*d-Rj-Ri;
+        double sValue = (n-2)*d-Rj-Ri;
         return sValue;
 
     }
@@ -131,10 +133,10 @@ private static int size = 5;
 
     //calcualting the distance of x and y from z node
     //-------------------------------------------------------------------------------------------
-    static double distanceofX(int dxy,int Ri,int Rj,int n){
+    static double distanceofX(double dxy,double Ri,double Rj,int n){
         return dxy/2 +((Ri-Rj)/(2*(n-2)));
     }
-     static double distanceofy(int dxy,double distanceX){
+     static double distanceofy(double dxy,double distanceX){
         return dxy - distanceX;
 
     }
@@ -142,9 +144,9 @@ private static int size = 5;
     
     //updating the distance matrix 
     //-------------------------------------------------------------------------------------------
-    static int[][] distanceMatrixUpdate(int[][] Qmatrix, int x, int y) {
+    static double[][] distanceMatrixUpdate(double[][] Qmatrix, int x, int y) {
     int n = Qmatrix.length;
-    int[][] newQmatrix = new int[n - 1][n - 1];
+    double[][] newQmatrix = new double[n - 1][n - 1];
     
     int newI = 0;
     for (int i = 0; i < n; i++) {
@@ -163,7 +165,7 @@ private static int size = 5;
         
         // Calculate distance from the NEW node (placed at the last index) to node 'i'
         // Distance formula: d(z, i) = [d(x, i) + d(y, i) - d(x, y)] / 2
-        int distToZ = (Qmatrix[i][x] + Qmatrix[i][y] - Qmatrix[x][y]) / 2;
+        double distToZ = (Qmatrix[i][x] + Qmatrix[i][y] - Qmatrix[x][y]) / 2;
         newQmatrix[newI][n - 2] = distToZ;
         newQmatrix[n - 2][newI] = distToZ;
         
