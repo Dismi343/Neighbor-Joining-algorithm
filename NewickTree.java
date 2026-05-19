@@ -88,7 +88,7 @@ public class NewickTree {
 
     static class Node {
         final String name;
-        final int weight;
+        final double weight;
         boolean realName = false;
         ArrayList<Node> children;
         Node parent;
@@ -102,7 +102,7 @@ public class NewickTree {
             } else {
                 actualNameText = name.substring(0, colonIndex);
                 // Handle possible decimal or format issues if needed, here assuming int
-                weight = Integer.parseInt(name.substring(colonIndex + 1));
+                weight = Double.parseDouble(name.substring(colonIndex + 1));
             }
 
             if (actualNameText.equals("")) {
