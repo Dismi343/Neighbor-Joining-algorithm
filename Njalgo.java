@@ -73,7 +73,8 @@ private static int size = 5;
             double distanceY = distanceofy(dxy,distanceX);
             System.out.println("Distance of y = " + y + " from z: " + distanceY);
 
-            
+            distanceX = Math.abs(distanceX);
+            distanceY = Math.abs(distanceY);
             //creating Newick labels
             String newNodeLabel = "(" + labels[x] + ":" + distanceX + "," + labels[y] + ":" + distanceY + ")Node_" + nodeCounter++;
 
@@ -95,6 +96,7 @@ private static int size = 5;
 
         }
 
+       
         //final step to join the last two nodes
         double finalDist = Qmatrix[0][1];
         double halfDist = finalDist / 2.0;
