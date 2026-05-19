@@ -97,8 +97,9 @@ private static int size = 5;
 
         //final step to join the last two nodes
         double finalDist = Qmatrix[0][1];
-        String finalNewick = "(" + labels[0] + ":" + finalDist + "," + labels[1] + ")Root;";
-        
+        double halfDist = finalDist / 2.0;
+        String finalNewick = "(" + labels[0] + ":" + halfDist + "," + labels[1] + ":" + halfDist + ")Root;"; 
+
         System.out.println("Final Newick String:");
         System.out.println(finalNewick);
 
@@ -148,15 +149,19 @@ private static int size = 5;
     int n = Qmatrix.length;
     double[][] newQmatrix = new double[n - 1][n - 1];
     
+    //identify the lower and higher indices to skip when copying the old matrix
+    int low = Math.min(x, y);
+    int high = Math.max(x, y);
+
     int newI = 0;
     for (int i = 0; i < n; i++) {
         // Skip rows x and y, as they are being merged
-        if (i == x || i == y) continue;
+        if (i == low || i == high) continue;
 
         int newJ = 0;
         for (int j = 0; j < n; j++) {
             // Skip columns x and y
-            if (j == x || j == y) continue;
+            if (j == low || j == high) continue;
             
             // Copy existing distances between other nodes
             newQmatrix[newI][newJ] = Qmatrix[i][j];
@@ -185,8 +190,12 @@ private static int size = 5;
     static String[] updateLabels(String[] oldLabels, int x, int y, String newLabel) {
         String[] nextLabels = new String[oldLabels.length - 1];
         int count = 0;
+        
+        int low = Math.min(x, y);
+        int high = Math.max(x, y);
+
         for (int i = 0; i < oldLabels.length; i++) {
-            if (i != x && i != y) {
+            if (i != low && i != high) {
                 nextLabels[count++] = oldLabels[i];
             }
         }
